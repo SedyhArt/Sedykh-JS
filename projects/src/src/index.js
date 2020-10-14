@@ -31,8 +31,8 @@ function returnFirstArgument(a) {
  Пример:
    sumWithDefaults(10) вернет 110
  */
-function sumWithDefaults(a, b) {
-  const sum = a + b;
+function sumWithDefaults(a) {
+  const sum = a + 100;
   return sum;
 }
 

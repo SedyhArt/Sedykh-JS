@@ -44,9 +44,10 @@ console.log(sumWithDefaults(20, 100));
  Пример:
    returnFnResult(() => 'привет') вернет 'привет'
  */
-function returnFnResult() {}
+function returnFnResult(fn) {
+  return fn();
+}
 
-console.log(returnFnResult(sumWithDefaults(10)));
 /*
  Задание 4:
 
@@ -60,7 +61,9 @@ console.log(returnFnResult(sumWithDefaults(10)));
    console.log(f()); // выведет 12
    console.log(f()); // выведет 13
  */
-function returnCounter(number) {}
+function returnCounter(number = 0) {
+  return () => ++number;
+}
 
 /*
  Задание 5 *:
@@ -71,7 +74,9 @@ function returnCounter(number) {}
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray() {}
+function returnArgumentsArray(...args) {
+  return args;
+}
 
 /*
  Задание 6 *:
@@ -88,7 +93,9 @@ function returnArgumentsArray() {}
 
    console.log(newSum()) выведет 6
  */
-function bindFunction(fn) {}
+function bindFunction(fn, ...args) {
+  return () => fn(...args);
+}
 
 export {
   returnFirstArgument,

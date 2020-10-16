@@ -29,9 +29,12 @@ console.log(returnFirstArgument(10));
  Пример:
    sumWithDefaults(10) вернет 110
  */
-const sumWithDefaults = (a) => a + 100;
+const sumWithDefaults = function (a, b = 100) {
+  const sum = a + b;
+  return sum;
+};
 
-console.log(sumWithDefaults(100));
+console.log(sumWithDefaults(20, 100));
 
 /*
  Задание 3:

@@ -1,5 +1,17 @@
 /* ДЗ 3 - работа с исключениями и отладчиком */
 
+function isArray(array) {
+  if (array.constructor !== Array || array.length === 0) {
+    throw new Error('empty array');
+  }
+}
+
+function isFunc(fn) {
+  if (typeof fn != 'function') {
+    throw new Error('fn is not a function');
+  }
+}
+
 /*
  Задание 1:
 
@@ -17,20 +29,15 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 function isAllTrue(array, fn) {
-  if (array.constructor !== Array || array.length === 0) {
-    throw new Error('empty array');
-  } else if (typeof fn != 'function') {
-    throw new Error('fn is not a function');
-  }
+  isArray(array);
+  isFunc(fn);
 
-  let result = true;
   for (let i = 0; i < array.length; i++) {
-    if (fn(array[i]) === false) {
-      result = false;
-      break;
+    if (!fn(array[i])) {
+      return false;
     }
   }
-  return result;
+  return true;
 }
 
 /*
@@ -50,20 +57,15 @@ function isAllTrue(array, fn) {
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
 function isSomeTrue(array, fn) {
-  if (array.constructor !== Array || array.length === 0) {
-    throw new Error('empty array');
-  } else if (typeof fn != 'function') {
-    throw new Error('fn is not a function');
-  }
+  isArray(array);
+  isFunc(fn);
 
-  let result = false;
   for (let i = 0; i < array.length; i++) {
-    if (fn(array[i]) === true) {
-      result = true;
-      break;
+    if (fn(array[i])) {
+      return true;
     }
   }
-  return result;
+  return false;
 }
 
 /*
@@ -79,9 +81,7 @@ function isSomeTrue(array, fn) {
  */
 function returnBadArguments(fn, ...args) {
   const elemArray = [];
-  if (typeof fn != 'function') {
-    throw new Error('fn is not a function');
-  }
+  isFunc(fn);
   for (let i = 0; i < args.length; i++) {
     try {
       fn(args[i]);

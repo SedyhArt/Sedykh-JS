@@ -33,20 +33,56 @@ import './cookie.html';
    const newDiv = document.createElement('div');
    homeworkContainer.appendChild(newDiv);
  */
-const homeworkContainer = document.querySelector('#homework-container');
+const app = document.querySelector('#app');
 // текстовое поле для фильтрации cookie
-const filterNameInput = homeworkContainer.querySelector('#filter-name-input');
+const filterNameInput = app.querySelector('#filter-name-input');
 // текстовое поле с именем cookie
-// const addNameInput = homeworkContainer.querySelector('#add-name-input');
+const addNameInput = app.querySelector('#add-name-input');
 // текстовое поле со значением cookie
-// const addValueInput = homeworkContainer.querySelector('#add-value-input');
+const addValueInput = app.querySelector('#add-value-input');
 // кнопка "добавить cookie"
-const addButton = homeworkContainer.querySelector('#add-button');
+const addButton = app.querySelector('#add-button');
 // таблица со списком cookie
-const listTable = homeworkContainer.querySelector('#list-table tbody');
+const listTable = app.querySelector('#list-table tbody');
+// новая строка
+// const newTr = document.createElement('tr');
+// новая ячейка
+// const newTd = document.createElement('td');
 
 filterNameInput.addEventListener('input', function () {});
 
-addButton.addEventListener('click', () => {});
+addButton.addEventListener('click', () => {
+  document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+  const newRow = document.createElement('tr');
+  const newTd1 = document.createElement('td');
+  const newTd2 = document.createElement('td');
+  const newTd3 = document.createElement('td');
 
-listTable.addEventListener('click', (e) => {});
+  const deliteButton = document.createElement('button');
+  deliteButton.appendChild(document.createTextNode('Удалить'));
+  deliteButton.classList.add('del');
+
+  newTd1.appendChild(document.createTextNode(`${addNameInput.value}`));
+  newTd2.appendChild(document.createTextNode(`${addValueInput.value}`));
+  newTd3.appendChild(deliteButton);
+  newRow.appendChild(newTd1);
+  newRow.appendChild(newTd2);
+  newRow.appendChild(newTd3);
+  listTable.appendChild(newRow);
+
+  addNameInput.value = '';
+  addValueInput.value = '';
+});
+
+listTable.addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') {
+    const delB = document.querySelector('.del');
+    delB.closest('tr').remove();
+
+    const cookieName = delB.closest('tr').childNodes[0].textContent;
+    const cookieValue = delB.closest('tr').childNodes[1].textContent;
+    console.log(cookieValue);
+
+    document.cookie = `"${cookieName}=${cookieValue}; max-age=0"`;
+  }
+});

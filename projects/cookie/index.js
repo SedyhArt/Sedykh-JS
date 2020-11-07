@@ -45,53 +45,78 @@ const addButton = app.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = app.querySelector('#list-table tbody');
 
-function createTable() {
-  for (const cookie in cookies) {
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-      <td>${cookie}</td>
-      <td id = "${cookie}">${cookies[cookie]}</td>
-      <td><button class= "del" data-delete="${cookie}">Удалить</button></td>`;
-    listTable.appendChild(newRow);
+function getCookies() {
+  if (!document.cookie) {
+    return {};
   }
+  return document.cookie.split('; ').reduce((prev, current) => {
+    const [name, value] = current.split('=');
+    prev[name] = value;
+    return prev;
+  }, {});
 }
-// if (cookies[addNameInput.value] === undefined)
 
-function createRow() {
-  if (Object.keys(cookies).indexOf(addNameInput.value) > -1) {
+function createTable(cookies) {
+  if (cookies[addNameInput.value]) {
     console.log('Уже есть такой Cookie');
     const cookieTableValue = document.getElementById(addNameInput.value);
-    cookieTableValue.innerText = addValueInput.value;
-  } else {
-    console.log(cookies);
+    return (cookieTableValue.innerText = addValueInput.value);
+  } else if (!cookies[addNameInput.value] && addNameInput.value) {
+    cookies = { [addNameInput.value]: addValueInput.value };
+  }
+
+  for (const cookie in cookies) {
     const newRow = document.createElement('tr');
+
     newRow.innerHTML = `
-       <td>${addNameInput.value}</td>
-        <td id="${addNameInput.value}">${addValueInput.value}</td>
-       <td><button class= "del" data-delete="${addNameInput.value}">Удалить</button></td>`;
+      <td>${cookie}</td>
+      <td id ="${cookie}">${cookies[cookie]}</td>
+      <td><button class="del" data-delete="${cookie}">Удалить</button></td>
+      `;
     listTable.appendChild(newRow);
-    cookies[addNameInput.value] = addValueInput.value;
   }
 }
 
-const cookies = document.cookie.split('; ').reduce((prev, current) => {
-  const [name, value] = current.split('=');
-  prev[name] = value;
-  return prev;
-}, {});
+function isMatching(full, chunk) {
+  return full.toLowerCase().indexOf(chunk.toLowerCase()) > -1;
+}
 
-filterNameInput.addEventListener('input', function () {});
+function clearDomTree(elem) {
+  for (let i = elem.children.length - 1; i > -1; i--) {
+    const element = elem.children[i];
+    element.remove();
+  }
+}
+
+filterNameInput.addEventListener('input', function (cookies) {
+  cookies = getCookies();
+
+  clearDomTree(listTable);
+
+  const cookiesNames = Object.keys(cookies);
+  let newObj = {};
+  for (const cookieName in cookiesNames) {
+    const name = cookiesNames[cookieName];
+    const val = cookies[cookiesNames[cookieName]];
+
+    if (isMatching(val, this.value) || isMatching(name, this.value)) {
+      newObj = { [name]: val };
+    }
+  }
+  createTable(newObj);
+});
 
 addButton.addEventListener('click', () => {
-  document.cookie = `${addNameInput.value}=${addValueInput.value}`;
-  if (addNameInput.value === '') {
-    alert('Не введено имя cookie');
-  } else {
-    createRow();
+  if (!addNameInput.value || !addValueInput.value) {
+    return alert('Не введено имя cookie');
   }
+  createTable(getCookies());
+  document.cookie = `${addNameInput.value}=${addValueInput.value}`;
 
-  addNameInput.value = '';
-  addValueInput.value = '';
+  setTimeout(() => {
+    addNameInput.value = '';
+    addValueInput.value = '';
+  }, 0);
 });
 
 listTable.addEventListener('click', (e) => {
@@ -99,11 +124,7 @@ listTable.addEventListener('click', (e) => {
     e.target.closest('tr').remove();
     const cookieName = e.target.dataset.delete;
     document.cookie = `${cookieName}=delete; expires=${new Date(0)}`;
-    delete cookies[cookieName];
-    console.log(cookies);
   }
 });
 
-if (document.cookie !== '') {
-  createTable();
-}
+createTable(getCookies());

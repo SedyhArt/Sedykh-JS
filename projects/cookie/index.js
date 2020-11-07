@@ -55,18 +55,22 @@ function createTable() {
     listTable.appendChild(newRow);
   }
 }
+// if (cookies[addNameInput.value] === undefined)
 
 function createRow() {
   if (Object.keys(cookies).indexOf(addNameInput.value) > -1) {
+    console.log('Уже есть такой Cookie');
     const cookieTableValue = document.getElementById(addNameInput.value);
     cookieTableValue.innerText = addValueInput.value;
-  } else if (cookies[addNameInput.value] === undefined) {
+  } else {
+    console.log(cookies);
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
        <td>${addNameInput.value}</td>
         <td id="${addNameInput.value}">${addValueInput.value}</td>
        <td><button class= "del" data-delete="${addNameInput.value}">Удалить</button></td>`;
     listTable.appendChild(newRow);
+    cookies[addNameInput.value] = addValueInput.value;
   }
 }
 
@@ -95,6 +99,8 @@ listTable.addEventListener('click', (e) => {
     e.target.closest('tr').remove();
     const cookieName = e.target.dataset.delete;
     document.cookie = `${cookieName}=delete; expires=${new Date(0)}`;
+    delete cookies[cookieName];
+    console.log(cookies);
   }
 });
 

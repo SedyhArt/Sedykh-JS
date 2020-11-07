@@ -44,34 +44,27 @@ const addValueInput = app.querySelector('#add-value-input');
 const addButton = app.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = app.querySelector('#list-table tbody');
-// новая строка
-// const newTr = document.createElement('tr');
-// новая ячейка
-// const newTd = document.createElement('td');
 
-function createTabel() {
+function createTable() {
   for (const cookie in cookies) {
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
       <td>${cookie}</td>
-      <td>${cookies[cookie]}</td>
+      <td id = "${cookie}">${cookies[cookie]}</td>
       <td><button class= "del" data-delete="${cookie}">Удалить</button></td>`;
     listTable.appendChild(newRow);
   }
 }
 
 function createRow() {
-  if (
-    cookies[addNameInput.value] !== addValueInput.value &&
-    cookies[addNameInput.value] !== undefined
-  ) {
-    listTable.lastChild.innerHTML = '';
-    createTabel();
+  if (Object.keys(cookies).indexOf(addNameInput.value) > -1) {
+    const cookieTableValue = document.getElementById(addNameInput.value);
+    cookieTableValue.innerText = addValueInput.value;
   } else if (cookies[addNameInput.value] === undefined) {
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
        <td>${addNameInput.value}</td>
-        <td>${addValueInput.value}</td>
+        <td id="${addNameInput.value}">${addValueInput.value}</td>
        <td><button class= "del" data-delete="${addNameInput.value}">Удалить</button></td>`;
     listTable.appendChild(newRow);
   }
@@ -106,5 +99,5 @@ listTable.addEventListener('click', (e) => {
 });
 
 if (document.cookie !== '') {
-  createTabel();
+  createTable();
 }

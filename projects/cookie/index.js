@@ -67,7 +67,6 @@ function createTable(cookies) {
 
   for (const cookie in cookies) {
     const newRow = document.createElement('tr');
-
     newRow.innerHTML = `
       <td>${cookie}</td>
       <td id ="${cookie}">${cookies[cookie]}</td>
@@ -93,15 +92,20 @@ filterNameInput.addEventListener('input', function (cookies) {
 
   clearDomTree(listTable);
 
-  const cookiesNames = Object.keys(cookies);
   let newObj = {};
+
+  const cookiesNames = Object.keys(cookies);
   for (const cookieName in cookiesNames) {
-    const name = cookiesNames[cookieName];
-    const val = cookies[cookiesNames[cookieName]];
+    let name = cookiesNames[cookieName];
+    let val = cookies[cookiesNames[cookieName]];
 
     if (isMatching(val, this.value) || isMatching(name, this.value)) {
-      newObj = { [name]: val };
+      newObj[name] = val;
+    } else if (!this.value) {
+      newObj = cookies;
     }
+    name = '';
+    val = '';
   }
   createTable(newObj);
 });
@@ -110,7 +114,12 @@ addButton.addEventListener('click', () => {
   if (!addNameInput.value || !addValueInput.value) {
     return alert('Не введено имя cookie');
   }
-  createTable(getCookies());
+  if (
+    isMatching(addNameInput.value, filterNameInput.value) ||
+    isMatching(addValueInput.value, filterNameInput.value)
+  ) {
+    createTable(getCookies());
+  }
   document.cookie = `${addNameInput.value}=${addValueInput.value}`;
 
   setTimeout(() => {
